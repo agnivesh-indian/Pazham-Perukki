@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pazham Perukki</title>
+<style>
+  *{box-sizing:border-box} body{margin:0;min-height:100dvh;display:grid;place-items:center;background:#e8f5e9;font-family:Arial,sans-serif;padding:0}
+  #game{width:min(100vw,960px);height:clamp(330px,62svh,420px);position:relative;overflow:hidden;background:linear-gradient(#8dddf5 0 70%,#99d86a 70% 100%);border:4px solid #244b2d;touch-action:manipulation}
+  #title{position:absolute;top:14px;left:18px;z-index:10;color:#fff35c;font-size:25px;font-weight:bold;text-shadow:2px 2px #276331}
+  #scoreboard{position:absolute;top:14px;right:18px;z-index:10;background:#fff1a7;border:2px solid #837020;border-radius:8px;padding:7px 10px;font:bold 17px monospace;color:#4d3d0e}
+  .cloud{position:absolute;background:#fff9;width:100px;height:25px;border-radius:30px}.cloud:before,.cloud:after{content:"";position:absolute;background:#fff9;border-radius:50%}.cloud:before{width:45px;height:45px;left:15px;bottom:0}.cloud:after{width:54px;height:54px;left:43px;bottom:0}
+  #ground{position:absolute;bottom:0;width:100%;height:65px;background:#5baa47;border-top:6px solid #347c39;background-image:repeating-linear-gradient(90deg,transparent 0 26px,#438d3e 27px 34px,transparent 35px 65px);background-position:0 15px;background-repeat:repeat-x}
+  #monkey{position:absolute;z-index:5;width:88px;height:95px;left:105px;bottom:60px;will-change:bottom}
+  #monkey.running .leg1{animation:legA .16s infinite alternate}.running .leg2{animation:legB .16s infinite alternate}.running .arm1{animation:legB .16s infinite alternate}.running .arm2{animation:legA .16s infinite alternate}
+  @keyframes legA{to{transform:rotate(25deg)}}@keyframes legB{to{transform:rotate(-25deg)}}
+  .leg1,.leg2{transform-origin:48px 75px}.arm1,.arm2{transform-origin:65px 52px}
+  .obstacle{position:absolute;z-index:4;width:42px;height:91px;bottom:60px;border:4px solid #4e2915;border-radius:9px 9px 13px 13px;background:repeating-linear-gradient(0deg,#a9642c 0 11px,#764018 12px 19px)}
+  .obstacle:before{content:"";position:absolute;left:-6px;top:-9px;width:46px;height:16px;border:3px solid #4e2915;border-radius:50%;background:#d38a40}
+  .banana{position:absolute;z-index:4;width:48px;height:42px;filter:drop-shadow(2px 3px 1px #2545)}
+  .banana svg{width:100%;height:100%}
+  #message{position:absolute;z-index:20;inset:0;display:grid;place-items:center;background:#153f28a8;color:white;text-align:center}.panel{width:min(390px,90%);padding:24px;background:#317b3d;border:3px solid #ffe866;border-radius:18px;box-shadow:0 8px #1e512d}.panel h1{color:#ffec63;text-shadow:0 3px #80510d;margin:0 0 10px;font-size:34px}.panel p{line-height:1.45}.button{border:2px solid #fff0a0;border-radius:9px;background:#ffc93c;box-shadow:0 4px #9e6011;color:#513009;padding:11px 20px;font-weight:bold;font-size:16px;cursor:pointer}.button:active{transform:translateY(3px);box-shadow:0 1px #9e6011}.hidden{display:none!important}
+@media(max-width:520px){#game{height:100svh;border:0}.cloud{scale:.7}#title{font-size:18px;top:11px;left:12px}#scoreboard{font-size:13px;top:10px;right:10px;padding:6px}.panel{padding:20px}.panel h1{font-size:29px}}
+</style>
+</head>
+<body>
+<div id="game">
+  <div class="cloud" style="left:90px;top:72px"></div><div class="cloud" style="left:580px;top:125px;transform:scale(.7)"></div>
+  <div id="title">PAZHAM PERUKKI</div><div id="scoreboard">BANANAS: <span id="score">0</span> &nbsp; HI: <span id="high">0</span></div>
+  <div id="monkey" class="running">
+    <svg viewBox="0 0 105 105" aria-label="Monkey">
+      <path d="M34 74C18 76 18 88 28 88c8 0 9-8 3-10" fill="none" stroke="#71391d" stroke-width="5" stroke-linecap="round"/>
+      <ellipse cx="55" cy="63" rx="20" ry="20" fill="#8d4a25"/>
+      <g class="arm1"><path d="M72 57l21 12" stroke="#71391d" stroke-width="10" stroke-linecap="round"/></g><g class="arm2"><path d="M39 60L25 70" stroke="#71391d" stroke-width="9" stroke-linecap="round"/></g>
+      <g class="leg1"><path d="M48 83L40 101" stroke="#71391d" stroke-width="11" stroke-linecap="round"/></g><g class="leg2"><path d="M67 83l13 17" stroke="#71391d" stroke-width="11" stroke-linecap="round"/></g>
+      <circle cx="55" cy="35" r="28" fill="#8d4a25"/><circle cx="32" cy="31" r="13" fill="#71391d"/><circle cx="78" cy="31" r="13" fill="#71391d"/><ellipse cx="55" cy="43" rx="20" ry="16" fill="#f0b878"/><circle cx="46" cy="36" r="3.5"/><circle cx="65" cy="36" r="3.5"/><ellipse cx="55" cy="46" rx="5" ry="3.5" fill="#4b291a"/><path d="M49 52q6 6 13 0" fill="none" stroke="#4b291a" stroke-width="2.5"/>
+    </svg>
+  </div>
+  <div id="ground"></div>
+  <div id="message"><div class="panel"><h1>Pazham Perukki</h1><p>Jump over the upright logs and collect bananas.</p><p><b>Space / Up Arrow / Tap</b> to jump</p><button class="button" id="start">START</button></div></div>
+</div>
+<script>
+const game=document.getElementById('game'), monkey=document.getElementById('monkey'), message=document.getElementById('message');
+const scoreText=document.getElementById('score'), highText=document.getElementById('high');
+const GROUND=60; let MONKEY_LEFT=105; const MONKEY_W=88, MONKEY_H=95;
+let running=false, jumping=false, monkeyY=0, velocity=0, score=0, speed=330, lastTime=0, nextSpawn=0, objects=[];
+let high=Number(localStorage.getItem('pazhamHigh')||0); highText.textContent=high;
+
+function bananaSVG(){
+  return '<svg viewBox="0 0 100 70"><path d="M12 10c10-4 17 1 21 9 10 22 29 30 55 21 6-2 10 4 5 9-18 19-52 17-68-8-6-9-11-20-13-31z" fill="#ffe244" stroke="#80500d" stroke-width="4"/><path d="M12 10L4 5l7-5 10 10M87 39l9 1 1 8-10-3" fill="#6c4017"/><path d="M25 23c13 21 37 26 55 18" fill="none" stroke="#fff8aa" stroke-width="4" stroke-linecap="round"/></svg>';
+}
+
+function spawn(){
+  const isBanana=Math.random()<0.48;
+  const el=document.createElement('div');
+  el.className=isBanana?'banana':'obstacle';
+  if(isBanana) el.innerHTML=bananaSVG();
+  game.appendChild(el);
+  objects.push({
+    el,
+    isBanana,
+    x:game.clientWidth+30,
+    w:isBanana?48:42,
+    h:isBanana?42:91,
+    y:isBanana?100+Math.random()*105:0
+  });
+}
+
+function jump(){
+  if(!running||jumping) return;
+  jumping=true;
+  velocity=690;
+}
+
+function collide(a,b){
+  return a.left<b.right&&a.right>b.left&&a.bottom<b.top&&a.top>b.bottom;
+}
+
+function gameOver(){
+  running=false;
+  monkey.classList.remove('running');
+  if(score>high){
+    high=score;
+    localStorage.setItem('pazhamHigh',high);
+    highText.textContent=high;
+  }
+  message.innerHTML=`<div class="panel"><h1>Game Over</h1><p>You collected <b>${score}</b> banana${score===1?'':'s'}.</p><button class="button" id="restart">PLAY AGAIN</button></div>`;
+  message.classList.remove('hidden');
+  document.getElementById('restart').onclick=startGame;
+}
+
+function update(time){
+  if(!running) return;
+
+  const dt=Math.min((time-lastTime)/1000,.03);
+  lastTime=time;
+
+  velocity-=1750*dt;
+  monkeyY+=velocity*dt;
+
+  if(monkeyY<=0){
+    monkeyY=0;
+    velocity=0;
+    jumping=false;
+  }
+
+  monkey.style.bottom=(GROUND+monkeyY)+'px';
+
+  if(time>=nextSpawn){
+    spawn();
+    nextSpawn=time+Math.max(720,1350-score*10)+Math.random()*280;
+  }
+
+  const mRect={
+    left:MONKEY_LEFT+13,
+    right:MONKEY_LEFT+MONKEY_W-11,
+    bottom:GROUND+monkeyY+7,
+    top:GROUND+monkeyY+MONKEY_H-8
+  };
+
+  for(let i=objects.length-1;i>=0;i--){
+    const o=objects[i];
+    o.x-=speed*dt;
+    o.el.style.left=o.x+'px';
+    o.el.style.bottom=(GROUND+o.y)+'px';
+
+    const r={
+      left:o.x,
+      right:o.x+o.w,
+      bottom:GROUND+o.y,
+      top:GROUND+o.y+o.h
+    };
+
+    if(collide(mRect,r)){
+      if(o.isBanana){
+        score++;
+        speed=Math.min(560,speed+7);
+        scoreText.textContent=score;
+        o.el.remove();
+        objects.splice(i,1);
+        continue;
+      }
+      gameOver();
+      return;
+    }
+
+    if(o.x+o.w<0){
+      o.el.remove();
+      objects.splice(i,1);
+    }
+  }
+
+  requestAnimationFrame(update);
+}
+
+function layout(){
+  MONKEY_LEFT=Math.max(22, Math.min(105, game.clientWidth*.16));
+  monkey.style.left=MONKEY_LEFT+'px';
+}
+
+function startGame(){
+  layout();
+  objects.forEach(o=>o.el.remove());
+  objects=[];
+  score=0;
+  speed=330;
+  monkeyY=0;
+  velocity=0;
+  jumping=false;
+  scoreText.textContent=0;
+  message.classList.add('hidden');
+  running=true;
+  monkey.classList.add('running');
+  lastTime=performance.now();
+  nextSpawn=lastTime+1100;
+  requestAnimationFrame(update);
+}
+
+document.getElementById('start').onclick=startGame;
+addEventListener('keydown',e=>{
+  if(e.code==='Space'||e.code==='ArrowUp'){
+    e.preventDefault();
+    jump();
+  }
+});
+game.addEventListener('pointerdown',e=>{
+  if(!e.target.closest('button')) jump();
+});
+addEventListener('resize',layout);
+layout();
+</script>
+</body>
+</html>
