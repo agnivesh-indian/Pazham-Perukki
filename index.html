@@ -20,21 +20,21 @@
     --btn:#ffc83b;
     --btn-shadow:#9a5f11;
     --ground-h:70px;
-    --monkey-w:105px;
-    --monkey-h:118px;
-    --monkey-left:50%;
+    --monkey-w:68px;
+    --monkey-h:76px;
+    --monkey-left:24px;
     --monkey-ground:64px;
-    --obstacle-w:42px;
-    --obstacle-h:105px;
-    --banana-w:54px;
-    --banana-h:48px;
-    --title-size:30px;
-    --hud-size:22px;
+    --obstacle-w:28px;
+    --obstacle-h:70px;
+    --banana-w:34px;
+    --banana-h:30px;
+    --title-size:16px;
+    --hud-size:12px;
   }
   #game{position:fixed;inset:0;overflow:hidden;background:linear-gradient(var(--sky) 0 69%, #a8de76 69% 100%)}
   .cloud{position:absolute;background:#ffffffc9;width:64px;height:18px;border-radius:99px}.cloud:before,.cloud:after{content:"";position:absolute;border-radius:50%;background:#ffffffc9}.cloud:before{width:24px;height:24px;left:10px;bottom:0}.cloud:after{width:34px;height:34px;left:26px;bottom:0}
-  #title{position:absolute;top:calc(env(safe-area-inset-top) + 70px);left:50%;transform:translateX(-50%);z-index:10;text-align:center;font-size:var(--title-size);font-weight:800;color:#fff06a;text-shadow:2px 2px #2a6632;letter-spacing:.4px}
-  #scoreboard{position:absolute;top:calc(env(safe-area-inset-top) + 8px);left:50%;transform:translateX(-50%);z-index:10;padding:5px 8px;border:2px solid var(--hud-border);border-radius:8px;background:var(--hud-bg);font:800 var(--hud-size) monospace;color:var(--hud-text)}
+  #title{position:absolute;top:calc(env(safe-area-inset-top) + 8px);left:10px;z-index:10;font-size:var(--title-size);font-weight:800;color:#fff06a;text-shadow:2px 2px #2a6632;letter-spacing:.4px}
+  #scoreboard{position:absolute;top:calc(env(safe-area-inset-top) + 8px);right:8px;z-index:10;padding:5px 8px;border:2px solid var(--hud-border);border-radius:8px;background:var(--hud-bg);font:800 var(--hud-size) monospace;color:var(--hud-text)}
   #ground{position:absolute;left:0;right:0;bottom:0;height:var(--ground-h);background:#62b34a;border-top:5px solid var(--grass-dark);background-image:repeating-linear-gradient(90deg,transparent 0 20px,#448c3f 21px 26px,transparent 27px 46px);background-position:0 14px}
   #monkey{position:absolute;left:var(--monkey-left);bottom:var(--monkey-ground);width:var(--monkey-w);height:var(--monkey-h);z-index:6;will-change:transform,bottom}
   #monkey.running{animation:bob .14s infinite alternate}
@@ -129,7 +129,7 @@ function readVars(){
   OBSTACLE_H=parseFloat(cs.getPropertyValue('--obstacle-h'));
   BANANA_W=parseFloat(cs.getPropertyValue('--banana-w'));
   BANANA_H=parseFloat(cs.getPropertyValue('--banana-h'));
-  monkey.style.left=`calc(50% - ${MONKEY_W/2}px)`;
+  monkey.style.left=MONKEY_LEFT+'px';
   monkey.style.bottom=(GROUND+monkeyY)+'px';
 }
 
@@ -192,9 +192,8 @@ function update(time){
   }
 
   const mRect={
-    const monkeyLeft=(game.clientWidth-MONKEY_W)/2;
-    left:monkeyLeft+8,
-    right:monkeyLeft+MONKEY_W-6,
+    left:MONKEY_LEFT+8,
+    right:MONKEY_LEFT+MONKEY_W-6,
     bottom:GROUND+monkeyY+6,
     top:GROUND+monkeyY+MONKEY_H-6
   };
