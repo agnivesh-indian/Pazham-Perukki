@@ -12,19 +12,43 @@
   .cloud{position:absolute;background:#fff9;width:100px;height:25px;border-radius:30px}.cloud:before,.cloud:after{content:"";position:absolute;background:#fff9;border-radius:50%}.cloud:before{width:45px;height:45px;left:15px;bottom:0}.cloud:after{width:54px;height:54px;left:43px;bottom:0}
   #ground{position:absolute;bottom:0;width:100%;height:65px;background:#5baa47;border-top:6px solid #347c39;background-image:repeating-linear-gradient(90deg,transparent 0 26px,#438d3e 27px 34px,transparent 35px 65px);background-position:0 15px;background-repeat:repeat-x}
   #monkey{position:absolute;z-index:5;width:95px;height:95px;left:105px;bottom:60px;will-change:transform,bottom;transform-origin:center bottom}
-#monkey img{width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none}
-#monkey.running{animation:monkeyRun .28s infinite alternate ease-in-out}
-#monkey:not(.running){animation:monkeyIdle 2s ease-in-out infinite}
-#monkey.jump{animation:monkeyJump .45s ease-out}
-@keyframes monkeyRun{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(-5px) rotate(2deg) scale(1.02)}}
-@keyframes monkeyIdle{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-@keyframes monkeyJump{0%{transform:rotate(0)}50%{transform:rotate(-8deg)}100%{transform:rotate(0)}}
+  #monkey img{width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none}
+  #monkey.running{animation:monkeyRun .28s infinite alternate ease-in-out}
+  #monkey:not(.running){animation:monkeyIdle 2s ease-in-out infinite}
+  #monkey.jump{animation:monkeyJump .45s ease-out}
+  @keyframes monkeyRun{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(-5px) rotate(2deg) scale(1.02)}}
+  @keyframes monkeyIdle{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  @keyframes monkeyJump{0%{transform:rotate(0)}50%{transform:rotate(-8deg)}100%{transform:rotate(0)}}
   .obstacle{position:absolute;z-index:4;width:42px;height:91px;bottom:60px;border:4px solid #4e2915;border-radius:9px 9px 13px 13px;background:repeating-linear-gradient(0deg,#a9642c 0 11px,#764018 12px 19px)}
   .obstacle:before{content:"";position:absolute;left:-6px;top:-9px;width:46px;height:16px;border:3px solid #4e2915;border-radius:50%;background:#d38a40}
   .banana{position:absolute;z-index:4;width:48px;height:42px;filter:drop-shadow(2px 3px 1px #2545)}
   .banana svg{width:100%;height:100%}
-  #message{position:absolute;z-index:20;inset:0;display:grid;place-items:center;background:#153f28a8;color:white;text-align:center}.panel{width:min(390px,90%);padding:24px;background:#317b3d;border:3px solid #ffe866;border-radius:18px;box-shadow:0 8px #1e512d}.panel h1{color:#ffec63;text-shadow:0 3px #80510d;margin:0 0 10px;font-size:34px}.panel p{line-height:1.45}.button{border:2px solid #fff0a0;border-radius:9px;background:#ffc93c;box-shadow:0 4px #9e6011;color:#513009;padding:11px 20px;font-weight:bold;font-size:16px;cursor:pointer}.button:active{transform:translateY(3px);box-shadow:0 1px #9e6011}.hidden{display:none!important}
-@media(max-width:520px){#game{height:100svh;border:0}.cloud{scale:.7}#title{font-size:18px;top:11px;left:12px}#scoreboard{font-size:13px;top:10px;right:10px;padding:6px}.panel{padding:20px}.panel h1{font-size:29px}}
+  #message{position:absolute;z-index:20;inset:0;display:grid;place-items:center;background:#153f28a8;color:white;text-align:center}
+  .panel{width:min(390px,90%);padding:24px;background:#317b3d;border:3px solid #ffe866;border-radius:18px;box-shadow:0 8px #1e512d}
+  .panel h1{color:#ffec63;text-shadow:0 3px #80510d;margin:0 0 10px;font-size:34px}
+  .panel p{line-height:1.45}
+  .button{border:2px solid #fff0a0;border-radius:9px;background:#ffc93c;box-shadow:0 4px #9e6011;color:#513009;padding:11px 20px;font-weight:bold;font-size:16px;cursor:pointer}
+  .button:active{transform:translateY(3px);box-shadow:0 1px #9e6011}
+  .hidden{display:none!important}
+
+  .character-select{display:flex;gap:14px;justify-content:center;align-items:stretch;margin:14px 0 16px;flex-wrap:wrap}
+  .character-card{width:130px;background:#2b6a35;border:3px solid #cfe98a;border-radius:14px;padding:10px;cursor:pointer;box-shadow:0 5px #1e512d;transition:transform .15s ease,border-color .15s ease,background .15s ease}
+  .character-card:active{transform:translateY(2px)}
+  .character-card.selected{background:#3d8d48;border-color:#ffe866}
+  .character-card img{width:100%;height:90px;object-fit:contain;display:block;margin:0 auto 8px;pointer-events:none;user-select:none}
+  .character-name{font-weight:bold;font-size:14px;color:#fff6b2}
+  
+  @media(max-width:520px){
+    #game{height:100svh;border:0}
+    .cloud{scale:.7}
+    #title{font-size:18px;top:11px;left:12px}
+    #scoreboard{font-size:13px;top:10px;right:10px;padding:6px}
+    .panel{padding:20px}
+    .panel h1{font-size:29px}
+    .character-card{width:118px}
+    .character-card img{height:78px}
+    .character-name{font-size:13px}
+  }
 </style>
 </head>
 <body>
@@ -32,17 +56,55 @@
   <div class="cloud" style="left:90px;top:72px"></div><div class="cloud" style="left:580px;top:125px;transform:scale(.7)"></div>
   <div id="title">PAZHAM PERUKKI</div><div id="scoreboard">BANANAS: <span id="score">0</span> &nbsp; HI: <span id="high">0</span></div>
   <div id="monkey" class="running">
-    <img src="https://i.imgur.com/LGU35qv.png" alt="Monkey" draggable="false">
+    <img id="monkeySprite" src="https://i.imgur.com/LGU35qv.png" alt="Monkey" draggable="false">
   </div>
   <div id="ground"></div>
-  <div id="message"><div class="panel"><h1>Pazham Perukki</h1><p>Jump over the upright logs and collect bananas.</p><p><b>Space / Up Arrow / Tap</b> to jump</p><button class="button" id="start">START</button></div></div>
+  <div id="message">
+    <div class="panel">
+      <h1>Pazham Perukki</h1>
+      <p>Jump over the upright logs and collect bananas.</p>
+      <div class="character-select">
+        <div class="character-card selected" data-character="angi">
+          <img src="https://i.imgur.com/LGU35qv.png" alt="Angi san" draggable="false">
+          <div class="character-name">Angi san</div>
+        </div>
+        <div class="character-card" data-character="moylali">
+          <img src="https://i.imgur.com/SFK3esS.png" alt="Little Moylali" draggable="false">
+          <div class="character-name">Little Moylali</div>
+        </div>
+      </div>
+      <p><b>Space / Up Arrow / Tap</b> to jump</p>
+      <button class="button" id="start">START</button>
+    </div>
+  </div>
 </div>
 <script>
 const game=document.getElementById('game'), monkey=document.getElementById('monkey'), message=document.getElementById('message');
 const scoreText=document.getElementById('score'), highText=document.getElementById('high');
+const monkeySprite=document.getElementById('monkeySprite');
 const GROUND=60; let MONKEY_LEFT=105; const MONKEY_W=88, MONKEY_H=95;
 let running=false, jumping=false, monkeyY=0, velocity=0, score=0, speed=330, lastTime=0, nextSpawn=0, objects=[];
 let high=Number(localStorage.getItem('pazhamHigh')||0); highText.textContent=high;
+
+const characters={
+  angi:{name:'Angi san',src:'https://i.imgur.com/LGU35qv.png'},
+  moylali:{name:'Little Moylali',src:'https://i.imgur.com/SFK3esS.png'}
+};
+let selectedCharacter='angi';
+
+function applyCharacter(){
+  monkeySprite.src=characters[selectedCharacter].src;
+  monkeySprite.alt=characters[selectedCharacter].name;
+}
+
+document.querySelectorAll('.character-card').forEach(card=>{
+  card.addEventListener('click',()=>{
+    selectedCharacter=card.dataset.character;
+    document.querySelectorAll('.character-card').forEach(c=>c.classList.remove('selected'));
+    card.classList.add('selected');
+    applyCharacter();
+  });
+});
 
 function bananaSVG(){
   return '<svg viewBox="0 0 100 70"><path d="M12 10c10-4 17 1 21 9 10 22 29 30 55 21 6-2 10 4 5 9-18 19-52 17-68-8-6-9-11-20-13-31z" fill="#ffe244" stroke="#80500d" stroke-width="4"/><path d="M12 10L4 5l7-5 10 10M87 39l9 1 1 8-10-3" fill="#6c4017"/><path d="M25 23c13 21 37 26 55 18" fill="none" stroke="#fff8aa" stroke-width="4" stroke-linecap="round"/></svg>';
@@ -159,6 +221,7 @@ function layout(){
 }
 
 function startGame(){
+  applyCharacter();
   layout();
   objects.forEach(o=>o.el.remove());
   objects=[];
@@ -184,9 +247,10 @@ addEventListener('keydown',e=>{
   }
 });
 game.addEventListener('pointerdown',e=>{
-  if(!e.target.closest('button')) jump();
+  if(!e.target.closest('button')&&!e.target.closest('.character-card')) jump();
 });
 addEventListener('resize',layout);
+applyCharacter();
 layout();
 </script>
 </body>
